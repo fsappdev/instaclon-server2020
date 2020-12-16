@@ -1,4 +1,5 @@
 //requerimos lo necesario para el server
+const cors = require('cors');
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -9,6 +10,8 @@ const { MONGO_URI } = require("./keys");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); //server.js
 //
+//habilitamos el uso de cors
+app.use(cors())
 
 //
 //conectamos a la bd

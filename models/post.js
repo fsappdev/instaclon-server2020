@@ -14,7 +14,10 @@ const postSchema = new mongoose.Schema({
   foto: {
     type: String,
     required: true,
-    default: "sin foto",
+  },
+  extension: {
+    type: String,
+    required: false,
   },
   posteadoPor: {
     type: ObjectId,

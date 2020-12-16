@@ -13,7 +13,7 @@ router.get("/", (req, res) => {
 //ruta para registrarse en la aplicacion
 router.post("/registrarse", (req, res) => {
   const { name, email, password } = req.body;
-  console.log(name, email, password);
+  //console.log(name, email, password);
   if (!email || !name || !password) {
     return res
       .status(422)
@@ -61,7 +61,8 @@ router.post("/loguearse", (req, res) => {
         if (concuerda) {
           //res.json({ message: "Usuario autenticado exitosamente" })
           const token = jwt.sign({ _id: SavedUser._id }, JWT_SECRET); //uso el id del user de la bd para crear el token junto con la clave secreta
-          res.json({ token });
+          const { _id, name, email } = SavedUser;
+          res.json({ token, user: { _id, name, email } });
         } else {
           return res.status(422).json({ error: "Correo o Email incorrectos" });
         }

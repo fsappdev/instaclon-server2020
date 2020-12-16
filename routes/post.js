@@ -4,10 +4,11 @@ const mongoose = require("mongoose");
 const postModel = mongoose.model("Post");
 const LoginRequerido = require("../middleware/loginRequerido");
 
-router.post("/crearpost", LoginRequerido, (req, res) => {
-  //console.log(req.body);
-  const { title, body } = req.body;
-  if (!title || !body) {
+router.post("/crearpost", LoginRequerido, async (req, res) => {
+  console.log(req.body);
+   const { title, body, pic, ext } =  await req.body;
+  console.log(title, body, pic, ext);
+  if (!title || !body || !pic ) {
     return res
       .status(422)
       .json({ error: "por favor, rellene todos los campos" });
@@ -20,6 +21,8 @@ router.post("/crearpost", LoginRequerido, (req, res) => {
     titulo: title,
     cuerpo: body,
     posteadoPor: req.user,
+    foto: pic,
+    extension: ext
   });
   post
     .save()
@@ -27,11 +30,14 @@ router.post("/crearpost", LoginRequerido, (req, res) => {
     .catch((err) => console.log(err));
 });
 
-router.get("/todoslosposts", (req, res) => {
+router.get("/todoslosposts", LoginRequerido,(req, res) => {
   postModel
     .find()
     .populate("posteadoPor", "_id name")
-    .then((posts) => res.json(posts))
+    .then((posts) => {
+      res.json(posts)
+      console.log(posts);
+    })
     .catch((err) => error.log(err));
 });
 
