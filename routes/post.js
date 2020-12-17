@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router(); //creamos el "enrutador!"
 const mongoose = require("mongoose");
+const loginRequerido = require("../middleware/loginRequerido");
 const postModel = mongoose.model("Post");
 const LoginRequerido = require("../middleware/loginRequerido");
 
@@ -48,4 +49,16 @@ router.get("/misposts", LoginRequerido, (req, res) => {
     .then((misposts) => res.json(misposts))
     .catch((err) => error.log(err));
 });
+
+router.puy("/like", loginRequerido, (req,res)=>{
+  postModel.findByIdAndUpdate(req.body.PostId,{$push: {likes: req.user._id}},{new: true}).exec((err,result)=>{
+    if(err){return res.status(422).json({error: err})}else{res.json(result)}
+  })
+})
+
+router.puy("/dislike", loginRequerido, (req,res)=>{
+  postModel.findByIdAndUpdate(req.body.PostId,{$pull: {likes: req.user._id}},{new: true}).exec((err,result)=>{
+    if(err){return res.status(422).json({error: err})}else{res.json(result)}
+  })
+})
 module.exports = router; //post.js routes
