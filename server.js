@@ -34,7 +34,9 @@ connection.once('open', () => {
 mongoose.connect(MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  
 });
+mongoose.set('useFindAndModify', false);
 mongoose.connection.on("connected", () => {
   console.log("conectado a la bd PAPU");
 });

@@ -2,8 +2,9 @@ const express = require("express");
 const router = express.Router(); //creamos el "enrutador!"
 const mongoose = require("mongoose");
 const loginRequerido = require("../middleware/loginRequerido");
-const postModel = mongoose.model("Post");
+//const loginRequerido = require("../middleware/loginRequerido");
 const LoginRequerido = require("../middleware/loginRequerido");
+const postModel = mongoose.model("Post");
 
 router.post("/crearpost", LoginRequerido, async (req, res) => {
   console.log(req.body);
@@ -50,15 +51,46 @@ router.get("/misposts", LoginRequerido, (req, res) => {
     .catch((err) => error.log(err));
 });
 
-router.puy("/like", loginRequerido, (req,res)=>{
-  postModel.findByIdAndUpdate(req.body.PostId,{$push: {likes: req.user._id}},{new: true}).exec((err,result)=>{
+/* router.put("/like", loginRequerido, (req,res)=>{
+  postModel.findByIdAndUpdate(req.body.postId,{$push: {likes: req.user._id}},{new: true}).exec((err,result)=>{
     if(err){return res.status(422).json({error: err})}else{res.json(result)}
   })
+}) */
+
+/* router.put("/dislike", loginRequerido, (req,res)=>{
+  postModel.findByIdAndUpdate(req.body.PostId,{$pull: {likes: req.user._id}}).exec((err,result)=>{
+    if(err){return res.status(422).json({error: err})}else{res.json(result)}
+  })
+}) */
+
+router.put("/like",loginRequerido,(req, res) => {
+  postModel.findByIdAndUpdate(
+      req.body.postId,
+      {$push:{likes: req.user._id}},
+      {new: true}
+    )
+    .exec(
+      (err,result)=>{
+        if(err){  
+          return res.status(422).json({error: err})
+        }else{res.json(result)}
+    })
 })
 
-router.puy("/dislike", loginRequerido, (req,res)=>{
-  postModel.findByIdAndUpdate(req.body.PostId,{$pull: {likes: req.user._id}},{new: true}).exec((err,result)=>{
-    if(err){return res.status(422).json({error: err})}else{res.json(result)}
-  })
+router.put("/dislike",loginRequerido,(req, res) => {
+  console.log(req.body.postId);
+  console.log(req.user._id);
+  postModel.findByIdAndUpdate(
+      req.body.postId,
+      {$pull:{likes: req.user._id}},
+      {new: true}
+    )
+    .exec(
+      (err,result)=>{
+        if(err){  
+          return res.status(422).json({error: err})
+        }else{res.json(result)}
+    })
 })
+
 module.exports = router; //post.js routes
