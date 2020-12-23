@@ -27,6 +27,10 @@ const postSchema = new mongoose.Schema({
     type: ObjectId,
     ref: "User",
   }],
+  comentarios:[{
+    text:String,
+    posteadoPor: {type: ObjectId, ref: "User"}
+  }]
 
 });
 

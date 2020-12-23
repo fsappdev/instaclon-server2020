@@ -36,6 +36,7 @@ router.get("/todoslosposts", LoginRequerido,(req, res) => {
   postModel
     .find()
     .populate("posteadoPor", "_id name")
+    .populate("comentarios.posteadoPor", "_id name" )
     .then((posts) => {
       res.json(posts)
       console.log(posts);
@@ -92,5 +93,24 @@ router.put("/dislike",loginRequerido,(req, res) => {
         }else{res.json(result)}
     })
 })
+
+router.put("/comentar",loginRequerido,(req, res) => {
+  const comentario = {text: req.body.text,posteadoPor: req.user._id}
+  postModel.findByIdAndUpdate(
+      req.body.postId,
+      {$push:{comentarios: comentario}},
+      {new: true}
+    )
+    .populate("comentarios.posteadoPor", "_id name")
+    .populate("posteadoPor", "_id name")
+    
+    .exec(
+      (err,result)=>{
+        if(err){  
+          return res.status(422).json({error: err})
+        }else{res.json(result)}
+    })
+})
+
 
 module.exports = router; //post.js routes
