@@ -39,7 +39,7 @@ router.get("/todoslosposts", LoginRequerido,(req, res) => {
     .populate("comentarios.posteadoPor", "_id name" )
     .then((posts) => {
       res.json(posts)
-      console.log(posts);
+      //console.log(posts);
     })
     .catch((err) => error.log(err));
 });
@@ -79,8 +79,8 @@ router.put("/like",loginRequerido,(req, res) => {
 })
 
 router.put("/dislike",loginRequerido,(req, res) => {
-  console.log(req.body.postId);
-  console.log(req.user._id);
+  //console.log(req.body.postId);
+  //console.log(req.user._id);
   postModel.findByIdAndUpdate(
       req.body.postId,
       {$pull:{likes: req.user._id}},
@@ -98,6 +98,7 @@ router.put("/comentar",loginRequerido,(req, res) => {
   const comentario = {text: req.body.text,posteadoPor: req.user._id}
   postModel.findByIdAndUpdate(
       req.body.postId,
+      console.log('jasdasd'),
       {$push:{comentarios: comentario}},
       {new: true}
     )
@@ -112,5 +113,41 @@ router.put("/comentar",loginRequerido,(req, res) => {
     })
 })
 
+router.put("/descomentar",loginRequerido,(req, res) => {
+  const comentario = {text: req.body.text,posteadoPor: req.user._id}
+  postModel.findByIdAndUpdate(
+      req.body.postId,
+      {$pull:{comentarios: comentario}},
+      {new: true}
+    )
+    .populate("comentarios.posteadoPor", "_id name")
+    .populate("posteadoPor", "_id name")
+    
+    .exec(
+      (err,result)=>{
+        if(err){  
+          return res.status(422).json({error: err})
+        }else{res.json(result)}
+    })
+})
 
+
+
+router.delete("/delete/:postId", LoginRequerido,(req, res)=>{
+  postModel.findOne({_id: req.params.postId})
+    .populate("posteadoPor","_id")
+    .exec((error,post)=>{
+      if(error || !post){
+        return res.status(422).json({error: error})
+      }
+      if(post.posteadoPor._id.toString() === req.user._id.toString()){
+        post.remove()
+        .then(result=>{
+          console.log(result)
+          res.json(result)
+        })
+        .catch(err=>console.log(err))
+      }
+    })
+})
 module.exports = router; //post.js routes
