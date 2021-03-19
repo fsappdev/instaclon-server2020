@@ -53,9 +53,12 @@ require("./models/post");
 //requerimos el/los archivos de las rutas
 const authRoute = require("./routes/auth");
 const postRoute = require("./routes/post");
+const userRoute = require("./routes/user");
+
 //usamos las rutas
 app.use(authRoute); //server.js
 app.use(postRoute);
+app.use(userRoute);
 //
 
 //un middleware sirve para ejecutar codigo entre las peticiones.

@@ -2,11 +2,9 @@ const express = require("express");
 const router = express.Router(); //creamos el "enrutador!"
 const mongoose = require("mongoose");
 const loginRequerido = require("../middleware/loginRequerido");
-//const loginRequerido = require("../middleware/loginRequerido");
-const LoginRequerido = require("../middleware/loginRequerido");
 const postModel = mongoose.model("Post");
 
-router.post("/crearpost", LoginRequerido, async (req, res) => {
+router.post("/crearpost", loginRequerido, async (req, res) => {
   console.log(req.body);
    const { title, body, pic, ext } =  await req.body;
   console.log(title, body, pic, ext);
@@ -32,7 +30,7 @@ router.post("/crearpost", LoginRequerido, async (req, res) => {
     .catch((err) => console.log(err));
 });
 
-router.get("/todoslosposts", LoginRequerido,(req, res) => {
+router.get("/todoslosposts", loginRequerido,(req, res) => {
   postModel
     .find()
     .populate("posteadoPor", "_id name")
@@ -44,7 +42,7 @@ router.get("/todoslosposts", LoginRequerido,(req, res) => {
     .catch((err) => error.log(err));
 });
 
-router.get("/misposts", LoginRequerido, (req, res) => {
+router.get("/misposts", loginRequerido, (req, res) => {
   postModel
     .find({ posteadoPor: req.user._id })
     .populate("posteadoPor", "_id name")
@@ -98,7 +96,7 @@ router.put("/comentar",loginRequerido,(req, res) => {
   const comentario = {text: req.body.text,posteadoPor: req.user._id}
   postModel.findByIdAndUpdate(
       req.body.postId,
-      console.log('jasdasd'),
+      //console.log('jasdasd'),
       {$push:{comentarios: comentario}},
       {new: true}
     )
@@ -133,7 +131,7 @@ router.put("/descomentar",loginRequerido,(req, res) => {
 
 
 
-router.delete("/delete/:postId", LoginRequerido,(req, res)=>{
+router.delete("/delete/:postId", loginRequerido,(req, res)=>{
   postModel.findOne({_id: req.params.postId})
     .populate("posteadoPor","_id")
     .exec((error,post)=>{
