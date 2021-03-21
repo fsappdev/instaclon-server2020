@@ -61,10 +61,10 @@ router.post("/loguearse", (req, res) => {
         if (concuerda) {
           //res.json({ message: "Usuario autenticado exitosamente" })
           const token = jwt.sign({ _id: SavedUser._id }, JWT_SECRET); //uso el id del user de la bd para crear el token junto con la clave secreta
-          const { _id, name, email } = SavedUser;
-          res.json({ token, user: { _id, name, email } });
+          const { _id, name, email, siguiendoa, misseguidores } = SavedUser;
+          res.json({token, user: { _id, name, email, siguiendoa, misseguidores }});
         } else {
-          return res.status(422).json({ error: "Correo o Email incorrectos" });
+          return res.status(422).json({ error: "Correo y/o Contraseña incorrectos" });
         }
       })
       .catch((err) => {
