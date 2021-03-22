@@ -41,14 +41,14 @@ router.put('/seguir',loginRequerido,(req,res) => {
 })
 
 router.put('/noseguir',loginRequerido,(req,res) => {
-   User.findByIdAndUpdate( //comienza acá
+   userModel.findByIdAndUpdate( //comienza acá
       req.body.noseguirId,
       {$pull:{misseguidores:req.user._id}}, //envio mi id para actualizar la lista de la persona que quiero seguir.
       {new:true},
       (err, result) => {
          //if(err){return res.status(422).json({error:err})}
          err ? res.status(422).json({error: err}) : null
-         User.findByIdAndUpdate( //comienza acá
+         userModel.findByIdAndUpdate( //comienza acá
             req.user._id,
             {$pull:{siguiendoa: req.body.noseguirId}},//envio el id para actualizar MI con las personas a las que sigo.
             {new:true})
