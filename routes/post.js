@@ -42,6 +42,18 @@ router.get("/todoslosposts", loginRequerido,(req, res) => {
     .catch((err) => error.log(err));
 });
 
+router.get("/subposts", loginRequerido,(req, res) => {
+  postModel
+    .find({posteadoPor: {$in: req.user.siguiendoa}})
+    .populate("posteadoPor", "_id name")
+    .populate("comentarios.posteadoPor", "_id name" )
+    .then((posts) => {
+      res.json(posts)
+      //console.log(posts);
+    })
+    .catch((err) => error.log(err));
+});
+
 router.get("/misposts", loginRequerido, (req, res) => {
   postModel
     .find({ posteadoPor: req.user._id })

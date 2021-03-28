@@ -21,7 +21,6 @@ router.get('/user/:id',loginRequerido,(req, res)=>{
    .catch((err) => res.status(404).json({error: err + "Usuario no encontrado"}))
 })
 
-
 router.put('/seguir',loginRequerido,(req,res) => {
    userModel.findByIdAndUpdate( //comienza acá
       req.body.seguirId,
@@ -57,5 +56,34 @@ router.put('/noseguir',loginRequerido,(req,res) => {
             .catch(err=> res.status(422).json({error:err}))
       })   
 })
+
+router.put('/updatefoto',loginRequerido, (req,res) => {
+   console.log(req.body)
+   userModel.findByIdAndUpdate(
+      req.user._id,
+      {$set:{fotolink: req.body.fotolink}},
+      {new:true},
+      (err, result) => {
+         if(err){
+            return res.status(422).json({error: 'no se puede enviar la imagen'})   
+         }
+         res.json(result)
+      }
+   )
+      /* .select("-password")
+      .then(result=>res.json(result))
+      .catch(err=> res.status(422).json({error:err})) */
+      /* const actualizar = userModel.where({_id:req.body.id})
+      actualizar
+         .update({$set: {fotolink: req.body.fotolink}})
+         .updateOne()
+         .exec()
+         .select("-password")
+         .then(result=>res.json({contenido : result, mensaje : 'éxito'}))
+         .then(res.status(200).json({mens: 'foto de perfil actualizada correctamente'}))
+         .catch(err=> res.status(422).json({error:err})) */
+})
+
+
 module.exports = router
 

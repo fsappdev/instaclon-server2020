@@ -14,6 +14,11 @@ const userSchema = new mongoose.Schema({//creamos el esquema
       type: String,
       required: true
    },
+   fotolink: {
+      type: String,
+      required: false,
+      default: "https://res.cloudinary.com/developfsa/image/upload/v1616595686/user_default_wsqzrm.png"
+   },
    misseguidores:[{type: ObjectId,
       ref:"User"}],
    siguiendoa:[{type:ObjectId,

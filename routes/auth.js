@@ -12,9 +12,9 @@ router.get("/", (req, res) => {
 });
 //ruta para registrarse en la aplicacion
 router.post("/registrarse", (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, fotolink } = req.body;
   //console.log(name, email, password);
-  if (!email || !name || !password) {
+  if (!email || !name || !password ) {
     return res
       .status(422)
       .json({ error: `No se han enviado los datos completamente` });
@@ -32,6 +32,7 @@ router.post("/registrarse", (req, res) => {
             email,
             password: hashedPassword, //el pw encryptado
             name,
+            fotolink,
           });
           user
             .save() //guardamos en la bd de mongoDB
@@ -61,8 +62,8 @@ router.post("/loguearse", (req, res) => {
         if (concuerda) {
           //res.json({ message: "Usuario autenticado exitosamente" })
           const token = jwt.sign({ _id: SavedUser._id }, JWT_SECRET); //uso el id del user de la bd para crear el token junto con la clave secreta
-          const { _id, name, email, siguiendoa, misseguidores } = SavedUser;
-          res.json({token, user: { _id, name, email, siguiendoa, misseguidores }});
+          const { _id, name, email, siguiendoa, misseguidores,fotolink } = SavedUser;
+          res.json({token, user: { _id, name, email, siguiendoa, misseguidores,fotolink }});
         } else {
           return res.status(422).json({ error: "Correo y/o Contraseña incorrectos" });
         }
